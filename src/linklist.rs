@@ -1,23 +1,21 @@
-use std::fmt::Debug;
 use std::vec::Vec;
 
-#[derive(Debug)]
-pub struct List<T: Debug> {
+pub struct LinkList<T> {
     len: usize,
     head: Link<T>,
 }
 
 type Link<T> = Option<Box<Node<T>>>;
 
-#[derive(Debug)]
-struct Node<T: Debug> {
+#[derive()]
+struct Node<T> {
     elem: T,
     next: Link<T>,
 }
 
-impl<T: Debug> List<T> {
+impl<T> LinkList<T> {
     pub fn new() -> Self {
-        List { len: 0, head: None }
+        LinkList { len: 0, head: None }
     }
 
     pub fn from(list: Vec<T>) -> Self {
@@ -109,7 +107,7 @@ impl<T: Debug> List<T> {
     }
 }
 
-impl<T: Debug> Drop for List<T> {
+impl<T> Drop for LinkList<T> {
     fn drop(&mut self) {
         let mut cur_link = self.head.take();
         while let Some(mut boxed_node) = cur_link {
@@ -122,14 +120,14 @@ impl<T: Debug> Drop for List<T> {
 mod tests {
     use super::*;
     #[test]
-    fn test_list_new() {
-        let list = List::<usize>::new();
-        assert_eq!(true, list.head.is_none());
+    fn test_linklist_new() {
+        let linklist = LinkList::<usize>::new();
+        assert_eq!(true, linklist.head.is_none());
     }
 
     #[test]
-    fn test_list_from() {
-        let list = List::<usize>::from(vec![2, 3, 4]);
+    fn test_linklist_from() {
+        let list = LinkList::<usize>::from(vec![2, 3, 4]);
         assert_eq!(3, list.len());
         assert_eq!(2, list.head.as_ref().unwrap().elem);
         assert_eq!(3, list.head.as_ref().unwrap().next.as_ref().unwrap().elem);
@@ -163,25 +161,25 @@ mod tests {
     }
 
     #[test]
-    fn test_list_len() {
-        let mut list = List::<usize>::new();
+    fn test_linklist_len() {
+        let mut list = LinkList::<usize>::new();
         assert_eq!(0, list.len());
 
-        list = List::<usize>::from(vec![3, 4, 5]);
+        list = LinkList::<usize>::from(vec![3, 4, 5]);
         assert_eq!(3, list.len());
     }
 
     #[test]
-    fn test_list_index() {
-        let list = List::<usize>::from(vec![2, 3, 4, 5]);
+    fn test_linklist_index() {
+        let list = LinkList::<usize>::from(vec![2, 3, 4, 5]);
         assert_eq!(&2, list.index(0).unwrap());
         assert_eq!(&5, list.index(3).unwrap());
         assert_eq!(true, list.index(4).is_none());
     }
 
     #[test]
-    fn test_list_push() {
-        let mut list = List::<usize>::new();
+    fn test_linklist_push() {
+        let mut list = LinkList::<usize>::new();
         list.push(4);
         assert_eq!(1, list.len());
         assert_eq!(4, list.head.as_ref().unwrap().elem);
@@ -208,8 +206,8 @@ mod tests {
     }
 
     #[test]
-    fn test_list_pop() {
-        let mut list = List::<usize>::new();
+    fn test_linklist_pop() {
+        let mut list = LinkList::<usize>::new();
         list.push(1);
         list.push(2);
         list.push(3);
