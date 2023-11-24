@@ -32,7 +32,7 @@ impl<T: Debug> List<T> {
         return self.len;
     }
 
-    pub fn find(&self, i: usize) -> Option<&T> {
+    pub fn index(&self, i: usize) -> Option<&T> {
         if i >= self.len {
             return None;
         }
@@ -40,7 +40,7 @@ impl<T: Debug> List<T> {
         let mut iter = self.head.as_ref();
         while iter.is_some() {
             if pos == i {
-                return Some(&iter.unwrap().to_owned().elem);
+                return Some(&iter.as_ref().unwrap().elem);
             }
             pos += 1;
             iter = iter.unwrap().next.as_ref();
@@ -169,6 +169,14 @@ mod tests {
 
         list = List::<usize>::from(vec![3, 4, 5]);
         assert_eq!(3, list.len());
+    }
+
+    #[test]
+    fn test_list_index() {
+        let list = List::<usize>::from(vec![2, 3, 4, 5]);
+        assert_eq!(&2, list.index(0).unwrap());
+        assert_eq!(&5, list.index(3).unwrap());
+        assert_eq!(true, list.index(4).is_none());
     }
 
     #[test]
